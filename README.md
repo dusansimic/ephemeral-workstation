@@ -87,5 +87,6 @@ pre-commit run --all-files   # optional: run against everything now
 
 - **The `password` password is insecure by design.** Acceptable only because the box is ephemeral. Never reuse it for anything persistent.
 - **Fedora 44 image slug.** `var.image` defaults to `fedora-44`. Confirm it exists for your project/region with `hcloud image list`. If not, override `image` in `terraform.tfvars` or point it at a snapshot ID.
+- **Server type fallback.** `var.server_types` is an ordered preference list (default `["cx23", "cx33"]`). Terraform checks which types are available for new servers in `var.location` and picks the first available one; if none are, `apply` fails with a clear message. The chosen type is shown by `terraform output selected_server_type`.
 - **State is local.** `terraform.tfstate` lives on disk (gitignored). Fine for personal/ephemeral use.
 - **Adding repos or packages** is a data change: append to `workstation_repositories` (repositories role), `workstation_packages` (packages role), or `workstation_directories` (directories role) — no task edits needed.

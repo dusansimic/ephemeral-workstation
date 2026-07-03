@@ -10,10 +10,10 @@ variable "image" {
   default     = "fedora-44"
 }
 
-variable "server_type" {
-  description = "Hetzner server type. cx22 = 2 vCPU / 4GB (AMD, cheapest current gen)."
-  type        = string
-  default     = "cx22"
+variable "server_types" {
+  description = "Preferred server types in priority order. The first one available for new servers in var.location is used."
+  type        = list(string)
+  default     = ["cx23", "cx33"]
 }
 
 variable "location" {
