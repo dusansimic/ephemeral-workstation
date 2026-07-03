@@ -1,0 +1,91 @@
+# Ephemeral Workstation
+
+Terraform + Ansible to spin up a disposable Fedora 44 workstation on Hetzner Cloud, provision it, use it, and tear it down.
+
+## What you get
+
+- A Hetzner Cloud VM running Fedora 44.
+- User `dusan` — password `password`, your SSH key, member of the `docker` group, `fish` as login shell.
+- Preinstalled: `git`, `fish`, `docker` (official Docker CE repo), `podman`, `tmux`, `htop`.
+- `~/Projects` directory.
+- Full system upgrade applied.
+
+## Layout
+
+```
+terraform/   # provisions the VM, writes ansible/inventory/hosts.ini
+ansible/     # roles: repositories, packages, update, user, directories
+```
+
+## Prerequisites
+
+- Terraform >= 1.5
+- Ansible + collections: `cd ansible && ansible-galaxy collection install -r requirements.yml`
+- A Hetzner Cloud API token
+- (Optional) `hcloud` CLI to check the image slug
+- (Optional) [pre-commit](https://pre-commit.com) for the linting hooks
+
+## Pre-commit hooks
+
+`.pre-commit-config.yaml` runs on every commit:
+
+- **terraform_fmt** + **terraform_validate** — format and validate the Terraform.
+- **ansible-lint** — lint the roles and playbook (`production` profile, config in `ansible/.ansible-lint`).
+- General hygiene: trailing whitespace, end-of-file, merge-conflict markers, private-key detection, YAML check.
+
+Enable once:
+
+```sh
+pre-commit install
+pre-commit run --all-files   # optional: run against everything now
+```
+
+## Usage
+
+1. **Configure Terraform**
+
+   ```sh
+   cd terraform
+   cp terraform.tfvars.example terraform.tfvars
+   # edit terraform.tfvars: set hcloud_token and ssh_public_key
+   ```
+
+2. **Create the VM**
+
+   ```sh
+   terraform init
+   terraform apply
+   ```
+
+   This boots the server and writes `ansible/inventory/hosts.ini` with its IP.
+
+3. **Set the SSH key for Ansible**
+
+   Edit `ansible/site.yml` → `workstation_ssh_key` to the same public key you gave Terraform.
+
+4. **Provision**
+
+   ```sh
+   cd ../ansible
+   ansible-galaxy collection install -r requirements.yml   # first time only
+   ansible-playbook site.yml
+   ```
+
+5. **Connect**
+
+   ```sh
+   ssh dusan@$(cd ../terraform && terraform output -raw ipv4_address)
+   ```
+
+6. **Tear down**
+
+   ```sh
+   cd terraform && terraform destroy
+   ```
+
+## Notes / caveats
+
+- **The `password` password is insecure by design.** Acceptable only because the box is ephemeral. Never reuse it for anything persistent.
+- **Fedora 44 image slug.** `var.image` defaults to `fedora-44`. Confirm it exists for your project/region with `hcloud image list`. If not, override `image` in `terraform.tfvars` or point it at a snapshot ID.
+- **State is local.** `terraform.tfstate` lives on disk (gitignored). Fine for personal/ephemeral use.
+- **Adding repos or packages** is a data change: append to `workstation_repositories` (repositories role), `workstation_packages` (packages role), or `workstation_directories` (directories role) — no task edits needed.

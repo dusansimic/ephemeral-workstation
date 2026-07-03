@@ -1,0 +1,4 @@
+---
+# Directories to create in the user's home. Append to add more.
+workstation_directories:
+  - Projects

@@ -1,0 +1,13 @@
+---
+workstation_packages:
+  - git
+  - fish
+  - podman
+  - tmux
+  - htop
+  # Docker CE (from the official repo added by the repositories role)
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+  - docker-buildx-plugin
+  - docker-compose-plugin

@@ -1,0 +1,8 @@
+---
+# Intentional deviations from the basic profile:
+skip_list:
+  # Shared workstation_* vars are owned by the playbook and reused across roles
+  # by design, so they are not prefixed with each role's name.
+  - var-naming[no-role-prefix]
+  # The `update` role deliberately upgrades every package to latest — that is its job.
+  - package-latest

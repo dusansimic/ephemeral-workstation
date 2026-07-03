@@ -1,0 +1,11 @@
+---
+- name: Install workstation packages
+  ansible.builtin.dnf:
+    name: "{{ workstation_packages }}"
+    state: present
+
+- name: Enable and start Docker service
+  ansible.builtin.systemd:
+    name: docker
+    enabled: true
+    state: started

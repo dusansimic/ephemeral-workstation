@@ -1,0 +1,9 @@
+---
+- name: Create directories in user home
+  ansible.builtin.file:
+    path: "/home/{{ workstation_user }}/{{ item }}"
+    state: directory
+    owner: "{{ workstation_user }}"
+    group: "{{ workstation_user }}"
+    mode: "0755"
+  loop: "{{ workstation_directories }}"
