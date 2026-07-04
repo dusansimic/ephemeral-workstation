@@ -1,0 +1,15 @@
+---
+- name: Enforce key-only SSH authentication
+  ansible.builtin.copy:
+    dest: /etc/ssh/sshd_config.d/10-ephemeral-workstation.conf
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      # Managed by Ansible — key-only authentication.
+      PubkeyAuthentication yes
+      PasswordAuthentication no
+      KbdInteractiveAuthentication no
+      PermitRootLogin prohibit-password
+    validate: /usr/sbin/sshd -t -f %s
+  notify: Restart sshd

@@ -5,7 +5,8 @@ Terraform + Ansible to spin up a disposable Fedora 44 workstation on Hetzner Clo
 ## What you get
 
 - A Hetzner Cloud VM running Fedora 44.
-- User `dusan` — password `password`, your SSH key, member of the `docker` group, `fish` as login shell.
+- User `dusan` — **no password** (SSH-key login only), member of the `docker` group, passwordless `sudo`, `fish` as login shell.
+- SSH hardened: key-only authentication (password auth disabled).
 - Preinstalled: `git`, `fish`, `docker` (official Docker CE repo), `podman`, `tmux`, `htop`.
 - `~/Projects` directory.
 - Full system upgrade applied.
@@ -47,7 +48,7 @@ pre-commit run --all-files   # optional: run against everything now
    ```sh
    cd terraform
    cp terraform.tfvars.example terraform.tfvars
-   # edit terraform.tfvars: set hcloud_token and ssh_public_key
+   # edit terraform.tfvars: set hcloud_token, ssh_public_key, ssh_private_key_file
    ```
 
 2. **Create the VM**
@@ -57,13 +58,9 @@ pre-commit run --all-files   # optional: run against everything now
    terraform apply
    ```
 
-   This boots the server and writes `ansible/inventory/hosts.ini` with its IP.
+   This boots the server and writes the Ansible inventory (`ansible/inventory/hosts.ini`, with the IP and private-key path) and `ansible/inventory/group_vars/workstation.yml` (with the public key). Both are gitignored.
 
-3. **Set the SSH key for Ansible**
-
-   Edit `ansible/site.yml` → `workstation_ssh_key` to the same public key you gave Terraform.
-
-4. **Provision**
+3. **Provision**
 
    ```sh
    cd ../ansible
@@ -71,13 +68,13 @@ pre-commit run --all-files   # optional: run against everything now
    ansible-playbook site.yml
    ```
 
-5. **Connect**
+4. **Connect**
 
    ```sh
    ssh dusan@$(cd ../terraform && terraform output -raw ipv4_address)
    ```
 
-6. **Tear down**
+5. **Tear down**
 
    ```sh
    cd terraform && terraform destroy
@@ -85,7 +82,7 @@ pre-commit run --all-files   # optional: run against everything now
 
 ## Notes / caveats
 
-- **The `password` password is insecure by design.** Acceptable only because the box is ephemeral. Never reuse it for anything persistent.
+- **No passwords.** Login is SSH-key only and `sudo` is passwordless — the box is reached solely via the key given to Terraform. Guard that private key accordingly.
 - **Fedora 44 image slug.** `var.image` defaults to `fedora-44`. Confirm it exists for your project/region with `hcloud image list`. If not, override `image` in `terraform.tfvars` or point it at a snapshot ID.
 - **Server type fallback.** `var.server_types` is an ordered preference list (default `["cx23", "cx33"]`). Terraform checks which types are available for new servers in `var.location` and picks the first available one; if none are, `apply` fails with a clear message. The chosen type is shown by `terraform output selected_server_type`.
 - **State is local.** `terraform.tfstate` lives on disk (gitignored). Fine for personal/ephemeral use.

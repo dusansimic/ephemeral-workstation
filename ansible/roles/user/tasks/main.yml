@@ -2,8 +2,8 @@
 - name: Create workstation user
   ansible.builtin.user:
     name: "{{ workstation_user }}"
-    password: "{{ workstation_password | password_hash('sha512') }}"
-    groups: docker
+    # No password is set — login is SSH-key only (see the ssh role).
+    groups: docker,wheel
     append: true
     shell: "{{ workstation_user_shell }}"
     create_home: true
@@ -13,4 +13,12 @@
   ansible.posix.authorized_key:
     user: "{{ workstation_user }}"
     key: "{{ workstation_ssh_key }}"
+    state: present
+
+- name: Grant passwordless sudo
+  community.general.sudoers:
+    name: "{{ workstation_user }}-nopasswd"
+    user: "{{ workstation_user }}"
+    commands: ALL
+    nopassword: true
     state: present

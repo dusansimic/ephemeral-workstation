@@ -32,3 +32,9 @@ variable "ssh_public_key" {
   description = "SSH public key string. Injected for root bootstrap and reused by Ansible for the workstation user."
   type        = string
 }
+
+variable "ssh_private_key_file" {
+  description = "Path to the matching private key on this machine. Written into the generated Ansible inventory."
+  type        = string
+  default     = "~/.ssh/id_ed25519"
+}

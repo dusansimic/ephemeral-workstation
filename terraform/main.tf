@@ -47,7 +47,17 @@ resource "hcloud_server" "workstation" {
 resource "local_file" "ansible_inventory" {
   filename = "${path.module}/../ansible/inventory/hosts.ini"
   content = templatefile("${path.module}/templates/inventory.tmpl", {
-    ipv4_address = hcloud_server.workstation.ipv4_address
+    ipv4_address         = hcloud_server.workstation.ipv4_address
+    ssh_private_key_file = var.ssh_private_key_file
+  })
+  file_permission = "0644"
+}
+
+# Generate the Ansible group_vars holding the user's SSH public key.
+resource "local_file" "ansible_group_vars" {
+  filename = "${path.module}/../ansible/inventory/group_vars/workstation.yml"
+  content = templatefile("${path.module}/templates/group_vars.tmpl", {
+    ssh_public_key = var.ssh_public_key
   })
   file_permission = "0644"
 }

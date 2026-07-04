@@ -13,8 +13,9 @@ override.tf.json
 .terraformrc
 terraform.rc
 
-# Generated Ansible inventory
+# Generated Ansible inventory + group_vars (written by Terraform)
 ansible/inventory/hosts.ini
+ansible/inventory/group_vars/
 
 # Ansible retry files
 *.retry

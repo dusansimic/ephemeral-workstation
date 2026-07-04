@@ -4,7 +4,8 @@ hcloud_token   = "your-hetzner-cloud-api-token"
 ssh_public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA... you@example.com"
 
 # Optional overrides:
-# image        = "fedora-44"
-# server_types = ["cx23", "cx33"]   # priority order; first available in location wins
-# location     = "nbg1"
-# server_name  = "ephemeral-workstation"
+# ssh_private_key_file = "~/.ssh/id_ed25519"   # written into the generated Ansible inventory
+# image                = "fedora-44"
+# server_types         = ["cx23", "cx33"]      # priority order; first available in location wins
+# location             = "nbg1"
+# server_name          = "ephemeral-workstation"
