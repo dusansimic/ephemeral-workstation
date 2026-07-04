@@ -9,3 +9,9 @@
     name: docker
     enabled: true
     state: started
+
+- name: Install Claude Code globally via npm
+  community.general.npm:
+    name: "{{ workstation_claude_code_package }}"
+    global: true
+    state: present

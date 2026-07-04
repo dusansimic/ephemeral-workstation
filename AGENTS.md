@@ -10,7 +10,7 @@ Terraform + Ansible to create and provision a **disposable Fedora 44 workstation
 
 ```
 terraform/   # provisions the VM, writes ansible/inventory/hosts.ini from a template
-ansible/     # site.yml playbook + roles (repositories, packages, update, user, directories)
+ansible/     # site.yml playbook + roles (repositories, packages, update, user, directories, fish, ssh)
 ```
 
 - Terraform state is **local** (`terraform.tfstate`, gitignored). No remote backend.
@@ -20,7 +20,7 @@ ansible/     # site.yml playbook + roles (repositories, packages, update, user, 
 ## Conventions
 
 - **Roles do one thing** (its name). Role execution order in `site.yml` is deliberate:
-  `repositories → packages → update → user → directories → ssh` (docker group must exist before the user joins it; the user's home must exist before creating `~/Projects`; SSH is hardened last, after the key is installed, to avoid lockout).
+  `repositories → packages → update → user → directories → fish → ssh` (docker group must exist before the user joins it; the user's home must exist before creating `~/Projects` and before installing fish plugins; SSH is hardened last, after the key is installed, to avoid lockout).
 - **Config is data, not code.** Adding a repo / package / directory = append to the role's
   `defaults/main.yml` list (`workstation_repositories`, `workstation_packages`, `workstation_directories`). Don't add new tasks for these.
 - **Shared vars are intentionally not role-prefixed** — they use the `workstation_` prefix and are owned by the playbook. `ansible/.ansible-lint` skips `var-naming[no-role-prefix]` and `package-latest` (the `update` role upgrades to latest on purpose).

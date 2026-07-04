@@ -13,4 +13,5 @@
     - update         # full system upgrade
     - user           # create user, docker group, ssh key, passwordless sudo
     - directories    # create ~/Projects
+    - fish           # fisher + fish plugins for the user
     - ssh            # enforce key-only SSH auth

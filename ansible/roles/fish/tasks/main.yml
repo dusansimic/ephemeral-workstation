@@ -1,0 +1,36 @@
+---
+# All tasks run as the workstation user so the fish config is owned by them.
+- name: Configure fisher and fish plugins
+  become: true
+  become_user: "{{ workstation_user }}"
+  vars:
+    fish_config_dir: "/home/{{ workstation_user }}/.config/fish"
+  block:
+    - name: Ensure fish functions directory exists
+      ansible.builtin.file:
+        path: "{{ fish_config_dir }}/functions"
+        state: directory
+        mode: "0755"
+
+    - name: Install the fisher function
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish
+        dest: "{{ fish_config_dir }}/functions/fisher.fish"
+        mode: "0644"
+      register: fisher_install
+
+    - name: Declare the fish plugins list
+      ansible.builtin.copy:
+        dest: "{{ fish_config_dir }}/fish_plugins"
+        content: |
+          {% for plugin in workstation_fish_plugins %}
+          {{ plugin }}
+          {% endfor %}
+        mode: "0644"
+      register: fish_plugins_file
+
+    - name: Install/update plugins with fisher
+      ansible.builtin.command:
+        cmd: fish -c "fisher update"
+      when: fisher_install is changed or fish_plugins_file is changed
+      changed_when: true

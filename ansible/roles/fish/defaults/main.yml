@@ -1,0 +1,6 @@
+---
+# Fisher-managed fish plugins (jorgebucaran/fisher manages itself).
+workstation_fish_plugins:
+  - jorgebucaran/fisher
+  - pure-fish/pure
+  - dusansimic/fish-aliases

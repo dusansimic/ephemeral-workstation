@@ -7,7 +7,8 @@ Terraform + Ansible to spin up a disposable Fedora 44 workstation on Hetzner Clo
 - A Hetzner Cloud VM running Fedora 44.
 - User `dusan` — **no password** (SSH-key login only), member of the `docker` group, passwordless `sudo`, `fish` as login shell.
 - SSH hardened: key-only authentication (password auth disabled).
-- Preinstalled: `git`, `fish`, `docker` (official Docker CE repo), `podman`, `tmux`, `htop`.
+- Preinstalled: `git`, `fish`, `docker` (official Docker CE repo), `podman`, `tmux`, `htop`, `nodejs`/`npm`, and [Claude Code](https://claude.com/claude-code) (global npm install).
+- Fish set up with [fisher](https://github.com/jorgebucaran/fisher) and plugins: `pure-fish/pure`, `dusansimic/fish-aliases`.
 - `~/Projects` directory.
 - Full system upgrade applied.
 
