@@ -1,0 +1,35 @@
+---
+- name: Check whether the tool is already installed - {{ tool.name }}
+  ansible.builtin.stat:
+    path: "/usr/local/bin/{{ tool.name }}"
+  register: tool_bin
+
+- name: Install from GitHub release - {{ tool.name }}
+  when: not tool_bin.stat.exists
+  block:
+    - name: Create a temp dir for {{ tool.name }}
+      ansible.builtin.tempfile:
+        state: directory
+        suffix: "{{ tool.name }}"
+      register: tool_tmp
+
+    - name: Download and extract {{ tool.name }}
+      ansible.builtin.unarchive:
+        src: "https://github.com/{{ tool.repo }}/releases/{{ ('download/' ~ tool.version) if tool.version is defined else 'latest/download' }}/{{ tool.asset }}"
+        remote_src: true
+        dest: "{{ tool_tmp.path }}"
+
+    - name: Install the binary into /usr/local/bin - {{ tool.name }}
+      ansible.builtin.copy:
+        src: "{{ tool_tmp.path }}/{{ tool.bin | default(tool.name) }}"
+        dest: "/usr/local/bin/{{ tool.name }}"
+        remote_src: true
+        owner: root
+        group: root
+        mode: "0755"
+  always:
+    - name: Remove the temp dir for {{ tool.name }}
+      ansible.builtin.file:
+        path: "{{ tool_tmp.path }}"
+        state: absent
+      when: tool_tmp.path is defined

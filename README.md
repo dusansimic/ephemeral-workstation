@@ -9,6 +9,7 @@ Terraform + Ansible to spin up a disposable Fedora 44 workstation on Hetzner Clo
 - SSH hardened: key-only authentication (password auth disabled).
 - Preinstalled: `git`, `fish`, `docker` (official Docker CE repo), `podman`, `tmux`, `htop`, `nodejs`/`npm`, and [Claude Code](https://claude.com/claude-code) (global npm install).
 - Fish set up with [fisher](https://github.com/jorgebucaran/fisher) and plugins: `pure-fish/pure`, `dusansimic/fish-aliases`.
+- Tools from GitHub releases into `/usr/local/bin`: [`eza`](https://github.com/eza-community/eza).
 - `~/Projects` directory.
 - Full system upgrade applied.
 

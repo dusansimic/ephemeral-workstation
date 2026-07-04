@@ -6,6 +6,7 @@ workstation_packages:
   - tmux
   - htop
   - curl
+  - tar   # used by the github_releases role to extract release tarballs
   - acl   # lets Ansible become an unprivileged user (setfacl on temp files)
   # Node.js + npm — used to install Claude Code globally
   - nodejs

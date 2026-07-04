@@ -1,0 +1,7 @@
+---
+- name: Install tools from GitHub releases
+  ansible.builtin.include_tasks: install.yml
+  loop: "{{ workstation_github_releases }}"
+  loop_control:
+    loop_var: tool
+    label: "{{ tool.name }}"

@@ -11,6 +11,7 @@
     - repositories   # add extra repos (Docker CE)
     - packages       # install base packages + Docker (creates docker group)
     - update         # full system upgrade
+    - github_releases # install tools from GitHub releases (eza, ...)
     - user           # create user, docker group, ssh key, passwordless sudo
     - directories    # create ~/Projects
     - fish           # fisher + fish plugins for the user

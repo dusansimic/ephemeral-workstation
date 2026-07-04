@@ -1,0 +1,13 @@
+---
+# Tools installed from GitHub release archives into /usr/local/bin.
+# Each entry:
+#   name    - command name / installed binary name (required)
+#   repo    - owner/repo on GitHub (required)
+#   asset   - release asset filename to download (required)
+#   bin     - path of the binary inside the extracted archive (default: name)
+#   version - release tag to pin (default: omitted -> latest release)
+workstation_github_releases:
+  - name: eza
+    repo: eza-community/eza
+    asset: eza_x86_64-unknown-linux-gnu.tar.gz
+    bin: eza
