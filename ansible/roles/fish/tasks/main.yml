@@ -6,11 +6,14 @@
   vars:
     fish_config_dir: "/home/{{ workstation_user }}/.config/fish"
   block:
-    - name: Ensure fish functions directory exists
+    - name: Ensure fish config directories exist
       ansible.builtin.file:
-        path: "{{ fish_config_dir }}/functions"
+        path: "{{ fish_config_dir }}/{{ item }}"
         state: directory
         mode: "0755"
+      loop:
+        - functions
+        - conf.d
 
     - name: Install the fisher function
       ansible.builtin.get_url:
@@ -34,3 +37,16 @@
         cmd: fish -c "fisher update"
       when: fisher_install is changed or fish_plugins_file is changed
       changed_when: true
+
+    - name: Auto-attach to the 'default' tmux session on interactive SSH logins
+      ansible.builtin.copy:
+        dest: "{{ fish_config_dir }}/conf.d/tmux.fish"
+        content: |
+          # Managed by Ansible. On an interactive SSH login (and not already
+          # inside tmux), attach to the 'default' session, creating it if needed.
+          if status is-interactive
+              and set -q SSH_CONNECTION
+              and not set -q TMUX
+              exec tmux new-session -A -s default
+          end
+        mode: "0644"
